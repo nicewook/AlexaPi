@@ -114,6 +114,12 @@ def alexa():
 			if re.match('.*boundary.*', v):
 				boundary =  v.split("=")[1]
 		data = r.content.split(boundary)
+		
+		print "r.content: "
+		print(r.content)
+		print "r.content.split(boundary)"
+		print(data)
+		
 		for d in data:
 			if (len(d) >= 1024):
 				audio = d.split('\r\n\r\n')[1].rstrip('--')
