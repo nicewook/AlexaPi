@@ -97,12 +97,17 @@ def alexa():
 				]	
 		r = requests.post(url, headers=headers, files=files)
 	
-	print "alexa() send headers and data: "
+	print "alexa() send headers: "
 	print(headers)
+	print "alexa() send data: "
 	print(d)
 	
-	print("return from amazon: ", r.status_code)
+	print "return from amazon(r): "
 	print(r)
+	print "r.status_code"
+	print(r.status_code)
+	print "r.headers"
+	print(r.headers)
 	
 	if r.status_code == 200:
 		for v in r.headers['content-type'].split(";"):
