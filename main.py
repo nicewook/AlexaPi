@@ -41,13 +41,26 @@ def gettoken():
 	token = mc.get("access_token")
 	refresh = refresh_token
 	if token:
+		print "gettoken: token exist"
+		print(token)
 		return token
 	elif refresh:
+		print "gettoken: token does not exist. refresh token"
 		payload = {"client_id" : Client_ID, "client_secret" : Client_Secret, "refresh_token" : refresh, "grant_type" : "refresh_token", }
 		url = "https://api.amazon.com/auth/o2/token"
+		
+		print "gettoken: refresh token - payload: "
+		print(payload)
 		r = requests.post(url, data = payload)
 		resp = json.loads(r.text)
+		
+		print "gettoken: refresh token - response(json): "
+		print(resp)
+		
 		mc.set("access_token", resp['access_token'], 3570)
+		
+		print "gettoken: refresh token - resp['access_token']: "
+		print(resp['access_token'])
 		return resp['access_token']
 	else:
 		return False
@@ -83,6 +96,14 @@ def alexa():
 				('file', ('audio', inf, 'audio/L16; rate=16000; channels=1'))
 				]	
 		r = requests.post(url, headers=headers, files=files)
+	
+	print "alexa() send headers and data: "
+	print(headers)
+	print(d)
+	
+	print("return from amazon: ", r.status_code)
+	print(r)
+	
 	if r.status_code == 200:
 		for v in r.headers['content-type'].split(";"):
 			if re.match('.*boundary.*', v):
@@ -109,10 +130,14 @@ def alexa():
 
 
 def start():
+	print("start function")
 	last = GPIO.input(button)
 	while True:
 		val = GPIO.input(button)
 		GPIO.wait_for_edge(button, GPIO.FALLING) # we wait for the button to be pressed
+		
+		print("button pressed")
+		
 		GPIO.output(lights[1], GPIO.HIGH)
 		inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE, alsaaudio.PCM_NORMAL, device)
 		inp.setchannels(1)
@@ -127,6 +152,9 @@ def start():
 		rf = open(path+'recording.wav', 'w')
 		rf.write(audio)
 		rf.close()
+		
+		print("button released. wrote recording.wav")
+		
 		inp = None
 		alexa()
 
