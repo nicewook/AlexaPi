@@ -7,6 +7,13 @@ pip install -r requirements.txt
 cp initd_alexa.sh /etc/init.d/AlexaPi
 update-rc.d AlexaPi defaults
 touch /var/log/alexa.log
+if [ -e "creds.py" ]
+	then
+		rm -rf ./creds.py
+		echo "removed creds.py"
+	else
+		echo "no creds.py"
+fi
 
 echo "Enter your Device Type ID :"
 read productid
@@ -29,8 +36,9 @@ read secret
 echo Client_Secret = \"$secret\" >> creds.py
 
 ip=`hostname -I`
-python ./auth_web.py 
 echo "Open http://$ip:5000"
+
+python ./auth_web.py 
 
 echo "You can now reboot"
 
